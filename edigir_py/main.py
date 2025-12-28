@@ -15,6 +15,7 @@ from .models import (
 from .parsers import DSWParser, POLParser, PALParser, GIRParser, LEDParser
 from .renderer import LEDRenderer, DisplayPreview
 from .font_editor import FontEditorWidget
+from .fullscreen_display import FullscreenGirouette, ScreenDetectionDialog
 
 
 class EditorApplication(tk.Tk):
@@ -111,6 +112,8 @@ class EditorApplication(tk.Tk):
         edit_menu.add_separator()
         edit_menu.add_command(label="Visualisation rapide", command=self._show_quick_view, accelerator="Ctrl+R")
         edit_menu.add_command(label="Simulation", command=self._show_simulation, accelerator="Ctrl+U")
+        edit_menu.add_separator()
+        edit_menu.add_command(label="Mode Girouette (plein écran)", command=self._show_fullscreen_girouette, accelerator="F11")
         
         # Polices menu
         font_menu = tk.Menu(menubar, tearoff=0)
@@ -399,6 +402,7 @@ class EditorApplication(tk.Tk):
         self.bind('<Prior>', lambda e: self._navigate_message(-1))  # PageUp
         self.bind('<Next>', lambda e: self._navigate_message(1))   # PageDown
         self.bind('<F1>', lambda e: self._show_help())
+        self.bind('<F11>', lambda e: self._show_fullscreen_girouette())
     
     # --- File operations ---
     
@@ -1089,6 +1093,23 @@ class EditorApplication(tk.Tk):
         ttk.Button(sim_window, text="Fermer", 
                    command=sim_window.destroy).pack(pady=10)
     
+    def _show_fullscreen_girouette(self):
+        """Show the fullscreen girouette display (screen as bus display)."""
+        def launch_fullscreen(config):
+            # Update project display config
+            self.project.front_display = config
+            
+            # Launch fullscreen display
+            fullscreen = FullscreenGirouette(
+                self,
+                self.project,
+                config
+            )
+            fullscreen.set_message(self.current_message_num)
+        
+        # Show configuration dialog
+        ScreenDetectionDialog(self, launch_fullscreen)
+    
     def _show_help(self):
         """Show help window."""
         help_window = tk.Toplevel(self)
@@ -1125,6 +1146,13 @@ FONCTIONNALITÉS PRINCIPALES:
    - Animation défilante
    - Prévisualisation des couleurs
 
+4. MODE GIROUETTE (PLEIN ÉCRAN)
+   - Transforme l'écran de votre ordinateur en afficheur de bus
+   - Affichage LED réaliste en plein écran
+   - Navigation par clavier entre messages et alternances
+   - Cycle automatique des alternances avec durées configurées
+   - Plusieurs couleurs LED disponibles (ambre, vert, rouge, jaune, blanc)
+
 RACCOURCIS CLAVIER:
    Ctrl+N     Nouveau fichier
    Ctrl+O     Ouvrir fichier
@@ -1133,9 +1161,19 @@ RACCOURCIS CLAVIER:
    Ctrl+G     Configuration girouettes
    Ctrl+R     Visualisation rapide
    Ctrl+U     Simulation
+   F11        Mode Girouette (plein écran)
    Page Up    Message précédent
    Page Down  Message suivant
    F1         Aide
+
+MODE GIROUETTE - COMMANDES:
+   ESC        Quitter le mode plein écran
+   ←/→        Message précédent/suivant
+   ↑/↓        Alternance précédente/suivante
+   ESPACE     Démarrer/Arrêter le cycle automatique
+   C          Changer la couleur LED
+   H          Afficher/Masquer les informations
+   F          Basculer plein écran/fenêtré
 
 CARACTÈRES SPÉCIAUX:
    | (pipe)   Saut de ligne
