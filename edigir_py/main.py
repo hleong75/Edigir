@@ -16,6 +16,7 @@ from .parsers import DSWParser, POLParser, PALParser, GIRParser, LEDParser
 from .renderer import LEDRenderer, DisplayPreview
 from .font_editor import FontEditorWidget
 from .fullscreen_display import FullscreenGirouette, ScreenDetectionDialog
+from .image_export import ImageExporter, check_pil_available, get_supported_formats
 
 
 class EditorApplication(tk.Tk):
@@ -101,6 +102,15 @@ class EditorApplication(tk.Tk):
         dest_menu.add_separator()
         dest_menu.add_command(label="Importer ancienne version...", command=self._import_old)
         dest_menu.add_command(label="Exporter liste...", command=self._export_list)
+        dest_menu.add_separator()
+        
+        # Export submenu for images
+        export_menu = tk.Menu(dest_menu, tearoff=0)
+        dest_menu.add_cascade(label="Exporter image...", menu=export_menu)
+        export_menu.add_command(label="Exporter en PNG...", command=self._export_png, accelerator="Ctrl+E")
+        export_menu.add_command(label="Exporter en JPG...", command=self._export_jpg)
+        export_menu.add_command(label="Exporter en GIF animé...", command=self._export_gif)
+        
         dest_menu.add_separator()
         dest_menu.add_command(label="Quitter", command=self._on_close, accelerator="Alt+F4")
         
@@ -393,6 +403,7 @@ class EditorApplication(tk.Tk):
         self.bind('<Control-n>', lambda e: self._new_project())
         self.bind('<Control-o>', lambda e: self._open_file())
         self.bind('<Control-s>', lambda e: self._save_file())
+        self.bind('<Control-e>', lambda e: self._export_png())
         self.bind('<Control-p>', lambda e: self._show_font_editor())
         self.bind('<Control-g>', lambda e: self._configure_displays())
         self.bind('<Control-r>', lambda e: self._show_quick_view())
@@ -521,6 +532,140 @@ class EditorApplication(tk.Tk):
                         f.write(f"{msg.alternances[2].text}\n")
                 
                 self._set_status(f"Liste exportée: {os.path.basename(filename)}")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur d'export:\n{e}")
+    
+    def _get_current_message_text(self) -> str:
+        """Get the text of current message for export."""
+        msg = self.project.get_message(self.current_message_num)
+        if not msg:
+            return ""
+        
+        text = msg.header
+        if msg.alternances[0].text:
+            text += msg.alternances[0].text
+        elif msg.alternances[1].text:
+            text += msg.alternances[1].text
+        elif msg.alternances[2].text:
+            text += msg.alternances[2].text
+        
+        return text
+    
+    def _export_png(self):
+        """Export current message to PNG image."""
+        if not check_pil_available():
+            messagebox.showerror(
+                "Erreur",
+                "PIL/Pillow est requis pour l'export d'images.\n"
+                "Installez-le avec: pip install Pillow"
+            )
+            return
+        
+        msg = self.project.get_message(self.current_message_num)
+        if not msg:
+            messagebox.showwarning("Attention", "Aucun message à exporter")
+            return
+        
+        text = self._get_current_message_text()
+        if not text:
+            messagebox.showwarning("Attention", "Le message est vide")
+            return
+        
+        filename = filedialog.asksaveasfilename(
+            title="Exporter en PNG",
+            defaultextension=".png",
+            initialfile=f"message_{self.current_message_num}.png",
+            filetypes=[("Images PNG", "*.png")]
+        )
+        
+        if filename:
+            try:
+                exporter = ImageExporter(
+                    self.project.front_display or self.available_displays["16x084"],
+                    self.project.fonts
+                )
+                exporter.export_png(text, filename)
+                self._set_status(f"Image exportée: {os.path.basename(filename)}")
+                messagebox.showinfo("Export réussi", f"Image exportée:\n{filename}")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur d'export:\n{e}")
+    
+    def _export_jpg(self):
+        """Export current message to JPG image."""
+        if not check_pil_available():
+            messagebox.showerror(
+                "Erreur",
+                "PIL/Pillow est requis pour l'export d'images.\n"
+                "Installez-le avec: pip install Pillow"
+            )
+            return
+        
+        msg = self.project.get_message(self.current_message_num)
+        if not msg:
+            messagebox.showwarning("Attention", "Aucun message à exporter")
+            return
+        
+        text = self._get_current_message_text()
+        if not text:
+            messagebox.showwarning("Attention", "Le message est vide")
+            return
+        
+        filename = filedialog.asksaveasfilename(
+            title="Exporter en JPG",
+            defaultextension=".jpg",
+            initialfile=f"message_{self.current_message_num}.jpg",
+            filetypes=[("Images JPEG", "*.jpg;*.jpeg")]
+        )
+        
+        if filename:
+            try:
+                exporter = ImageExporter(
+                    self.project.front_display or self.available_displays["16x084"],
+                    self.project.fonts
+                )
+                exporter.export_jpg(text, filename)
+                self._set_status(f"Image exportée: {os.path.basename(filename)}")
+                messagebox.showinfo("Export réussi", f"Image exportée:\n{filename}")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur d'export:\n{e}")
+    
+    def _export_gif(self):
+        """Export current message alternances as animated GIF."""
+        if not check_pil_available():
+            messagebox.showerror(
+                "Erreur",
+                "PIL/Pillow est requis pour l'export d'images.\n"
+                "Installez-le avec: pip install Pillow"
+            )
+            return
+        
+        msg = self.project.get_message(self.current_message_num)
+        if not msg:
+            messagebox.showwarning("Attention", "Aucun message à exporter")
+            return
+        
+        # Check if there's content
+        has_content = msg.header or any(alt.text for alt in msg.alternances)
+        if not has_content:
+            messagebox.showwarning("Attention", "Le message est vide")
+            return
+        
+        filename = filedialog.asksaveasfilename(
+            title="Exporter en GIF animé",
+            defaultextension=".gif",
+            initialfile=f"message_{self.current_message_num}.gif",
+            filetypes=[("Images GIF", "*.gif")]
+        )
+        
+        if filename:
+            try:
+                exporter = ImageExporter(
+                    self.project.front_display or self.available_displays["16x084"],
+                    self.project.fonts
+                )
+                exporter.export_message_gif(msg, filename)
+                self._set_status(f"GIF exporté: {os.path.basename(filename)}")
+                messagebox.showinfo("Export réussi", f"GIF animé exporté:\n{filename}")
             except Exception as e:
                 messagebox.showerror("Erreur", f"Erreur d'export:\n{e}")
     
