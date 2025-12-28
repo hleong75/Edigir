@@ -1,0 +1,12 @@
+# Edigir - LED Destination Sign Editor
+# Requirements file
+# 
+# Note: tkinter is part of Python's standard library and doesn't need to be installed via pip.
+# On some Linux systems, you may need to install it separately:
+#   Ubuntu/Debian: sudo apt-get install python3-tk
+#   Fedora: sudo dnf install python3-tkinter
+#   Arch: sudo pacman -S tk
+
+# Optional dependencies for enhanced functionality:
+# pillow>=10.0.0  # For image export functionality
+# pyserial>=3.5   # For serial port communication (download to device)
