@@ -1,0 +1,84 @@
+Subject:
+Polices girouette
+From:
+Guillaume Roche-Chosson <guillaume.roche-chosson@insa-lyon.fr>
+Date:
+Sun, 28 Aug 2005 20:34:05 +0200
+To:
+tubesurf@isuisse.com
+X-UIDL:
+UID387-1118243045
+X-Mozilla-Status:
+0001
+X-Mozilla-Status2:
+10000000
+Return-Path:
+<guillaume.roche-chosson@insa-lyon.fr>
+Delivered-To:
+tubesurf@isuisse.com
+Received:
+from mailrecv04.ifrance.com (unknown [10.0.5.134]) by mailstor00.ifrance.com (Postfix) with ESMTP id 5109D252EFA for <tubesurf@isuisse.com>; Sun, 28 Aug 2005 20:30:52 +0200 (CEST)
+Received:
+from localhost (localhost [127.0.0.1]) by mailrecv04.ifrance.com (Postfix) with ESMTP id 5397728C090 for <tubesurf@isuisse.com>; Sun, 28 Aug 2005 20:33:31 +0200 (CEST)
+Received:
+from mailrecv04.ifrance.com ([127.0.0.1]) by localhost (mailrecv04 [127.0.0.1]) (amavisd-new, port 10024) with LMTP id 08464-01-98 for <tubesurf@isuisse.com>; Sun, 28 Aug 2005 20:33:30 +0200 (CEST)
+X-Greylist:
+domain auto-whitelisted by SQLgrey-1.5.9
+Received:
+from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62]) by mailrecv04.ifrance.com (Postfix) with ESMTP id 3764128C092 for <tubesurf@isuisse.com>; Sun, 28 Aug 2005 20:33:30 +0200 (CEST)
+Received:
+from [192.168.10.11] (lns-vlq-38-lyo-82-253-132-188.adsl.proxad.net [82.253.132.188]) by postfix4-1.free.fr (Postfix) with ESMTP id 98B36319EEA for <tubesurf@isuisse.com>; Sun, 28 Aug 2005 20:34:05 +0200 (CEST)
+Message-ID:
+<4312039D.1050708@insa-lyon.fr>
+User-Agent:
+Mozilla Thunderbird 1.0.6 (Macintosh/20050716)
+X-Accept-Language:
+fr, en
+MIME-Version:
+1.0
+Content-Type:
+multipart/mixed; boundary="------------080600050708020607090801"
+X-Spam-Status:
+No, hits=0.902 tagged_above=-999 required=7 tests=HTML_30_40, HTML_MESSAGE, HTML_TITLE_EMPTY
+
+Salut Xav'
+
+Je t'envoie un zip contenant les polices que j'ai fait.
+Y'en a 3 :
+
+   * grc-maj.pol : sert à afficher seulement des majuscules
+   * grc-min.pol : sert à afficher seulement des minuscules
+   * grc-minmix.pol : sert à afficher un mix entre mes minuscules et
+     les majuscules de Duhamel pour les débuts de mots. Mais il faut
+     changer la police suivant si on veut une minuscule ou un
+     majuscule, donc pas très pratique, sauf en utilisant un ptit
+     programme pour automatiser (je me suis remis au Java hier ! lol)
+
+Pour chaque fichier .pol, tu as le ficher .dsw associé qui sert d'exemple pour utiliser correctement les polices.
+
+Concernant les caractères spéciaux :
+
+   * Logo TCL : "#$%"
+   * Logo lea :  "&?@" (si tu regardes dans l'éditeur de polices
+     édigir, le "&" est affiché comme "_", ils se sont plantés ! )
+   * Logo T1 : "*,"
+   * Logo T2 : "+,"
+   * Smiley : "()"
+   * Flèche gauche : "<="
+   * Flèche droite : "=>"
+   * Caractère "é" : ":"
+   * Caractère "è" : ";"
+   * Caractère "ê" : """
+
+Voilà, je crois que c'est tout. Bon courage pour les tests ;)
+
+@bientôt, bizzz
+Guillaume
+
+grc-polices-gir.zip
+	
+Content-Type:
+	application/zip
+Content-Encoding:
+	base64
+

@@ -1,0 +1,615 @@
+MANUEL D'UTILISATION de EDIGIR 11
+
+Ce document est associé au document papier " EDIGIR 11 - NOTICE D'UTILISATION "
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	SOMMAIRE de l'AIDE
+	-----------------------------------
+
+
+	I. PRESENTATION GENERALE :
+	   --------------------------------------------------
+
+	II. PRESENTATION DES MODULES :
+	    ---------------------------------------------------------
+	 2.1. L'Editeur de destinations :
+
+	   2.1.1.  La barre des menus :	
+	   2.1.2.  La barre des boutons :	
+	   2.1.3.  Le cadre 'Numéro de Message' :	
+	   2.1.4.  Les onglets girouettes :	
+	   2.1.5.  L'éditeur de messages :	
+	   2.1.6.  L'éditeur d'options :	
+	   2.1.7.  L'afficheur de girouette :	
+	   2.1.8.  La boite de dialogue 'Choix des girouettes' :	
+	   2.1.9.  La boite de dialogue 'Options à l'affichage' :
+	   2.1.10. L'onglet chauffeur
+	   2.1.11. L'onglet afficheur intérieur 
+	 
+	 2.2. L'Editeur de polices :
+
+	   2.2.1. La barre de menus :
+	   2.2.2. L'indicateur de police :	
+	   2.2.3. L'éditeur de lettres :	
+	   2.2.4. Le tableau de visualisation des lettres :	
+	 
+	 2.3. Le Module de visualisation rapide :	
+
+	 2.4. Le module d'édition rapide :	
+
+	   2.4.1. La barre de menus :	
+	   2.4.2. Le tableau de données :	
+	   2.4.3. Les polices d'exportation :	
+
+	 2.5. Le module de simulation :	
+
+	 2.6. Le module de téléchargement :	
+
+	   2.6.1. Mode CLASSIQUE :
+	   2.6.2. Mode DUHABUS :	
+
+	 2.7. L'Editeur de palette :	
+
+------------------------------------------------------------------------------------------------
+
+	I. PRESENTATION GENERALE :
+	   --------------------------------------------------
+Le programme comporte plusieurs modules :
+
+	* L'éditeur de destinations : 
+
+  Ce module gère l'édition des messages de destinations : saisie et mise en forme des messages,
+choix des polices, choix des animations pour girouette à Leds, etc... C'est le module principal 
+d'Edigir pour Windows. Il permet en outre d'accèder aux autres modules.
+
+
+	* L'éditeur de police : 
+
+  Ce module permet la personnalisation des polices d'affichage des messages.
+
+
+	* Le module de visualisation rapide : 
+
+  Ce module permet d'afficher la liste des messages sous forme d'un tableau et de modifier 
+leur numéro.
+
+
+	* Le module d'édition rapide : 
+
+  Ce module permet l'édition rapide des messages.
+
+
+	* Le module de simulation : 
+
+  Ce module permet de simuler l'affichage sur les girouettes.
+
+
+	* Le module de téléchargement : 
+
+  Ce module permet de télécharger les données sur le boîtier de transfert.
+
+
+
+  L'aide est accessible à tout moment en cliquant sur le menu ' ?' et 'Aide' ou en appuyant 
+sur 'F1'.
+
+
+------------------------------------------------------------------------------------------------
+
+	II. PRESENTATION DES MODULES :
+	    ---------------------------------------------------------
+	2.1. L'Editeur de destinations :
+
+	  2.1.1. La barre des menus :
+
+DESTINATION :
+--------------------------
+Nouveau (Ctrl-N)		:	pour créer un nouveau fichier de destinations
+Charger 			:	charge un fichier destination existant (*.dsw) à partir 
+				du disque
+Importer ancienne version 	:	importe un fichier au format Edigir pour Dos (*.dst)
+Enregistrer (Ctrl-S) 		:	enregistre le fichier destination courant au format
+				windows (.dsw)
+Enregistrer sous 		:	enregistre le fichier destination courant 
+				en demandant un nom 
+Quitter (Alt-F4) 		:	Ferme Edigir
+
+
+EDITION :
+----------------
+Visualisation rapide (Ctrl-R) 	:	affiche le module de visualisation rapide.
+Edition rapide (Ctrl-D)	: 	affiche le module d'édition rapide.
+Simulation (Ctrl-U)		:	affiche le module de simulation.
+Nouveau message (Ctrl-Ins) 	:	ajoute un nouveau message à la liste des messages.
+Effacer message (Ctrl-Del) 	:	efface le message courant.
+Couper (Ctrl-X) 		:	Coupe le texte sélectionné et le met dans le 
+				presse papier.
+Copier (Ctrl-C) 		:	Copie le texte sélectionné et le met dans le 
+				presse papier.
+Tout copier (Ctrl-E) 		:	Copie l'ensemble des alternances du message en cours 
+				et le met dans le presse papier.
+Coller (Ctrl-V) 		:	Colle le contenu du presse papier (associé à la 
+				commande 'Copier' ).
+Tout coller (Ctrl-A) 		:	Colle le contenu du presse papier (associé à la 
+				commande 'Tout Copier' ).
+
+
+POLICES :
+-----------------
+Editeur de polices (Ctrl-P) 	:	affiche le module d'édition des polices.
+
+
+TELECHARGEMENT :
+------------------------------------
+Téléchargement (Ctrl-T) 	:	affiche le module de téléchargement.
+
+
+IMPRESSION :
+------------------------
+Configurer l'imprimante 	:	Affiche la boite de dialogue de configuration 
+				de l'imprimante. Pour imprimer dans un fichier plutôt
+				que sur du papier, cochez la case 'Imprimer dans un 
+				fichier' de la boite de dialogue, puis choisissez un 
+				nom de fichier.
+Police d'impression 		:	Affiche la boite de dialogue de configuration de choix 
+				de la police de caractère pour l'impression. 
+Imprimer (Ctrl-I) 		:	Imprime tous les messages et les options du fichier 
+				destinations. Si l'option 'Imprimer dans un fichier' a été 
+				sélectionnée, un nom de fichier est demandé pour la
+				sortie.
+Exportation de la liste 	:	Crée un fichier '.txt' formaté destiné à étre chargé 
+				depuis un tableur de type EXCEL (Microsoft).
+
+
+CONFIGURATION :
+-------------------------------
+Girouettes (Ctrl-G) 		:	Affiche la boite de dialogue de choix des girouettes.
+Affichage des options (Ctrl-O) 	:	Affiche la boite de dialogue de choix des options à 
+				afficher.
+Affichage du nombre de caractères
+qui seront téléchargé (240 max.): 	Un message doit comporter moins de 240 caractères.
+
+Affichage du nombre de colonnes du texte 
+en cours (1600 max. pour un défilant) :	Un texte défilant ne doit pas s'afficher sur plus de 			
+				1600 colonnes.
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.2. La barre des boutons :
+
+  Les turbo boutons reprennent certaines des fonctions des différents menus décrits ci-dessus.
+De gauche à droite, on trouve les quatres groupes de boutons suivants :
+
+	- 1er groupe	: Ouvrir nouveau fichier, Charger fichier existant, Enregistrer fichier
+	- 2nd groupe	: Couper, Copier, Coller, Tout Copier, Tout Coller
+	- 3eme groupe	: Imprimer
+	- 4eme groupe	: Nouveau message, Effacer message
+
+
+  Située à droite des boutons, la liste déroulante des polices permet de choisir la police 
+courante pour le message. Il est également possible d'effectuer ce choix en utilisant 
+les raccourcis clavier suivants : 
+
+	Raccourcis clavier :
+
+Alt+PavéNumérique0 = Police 0  
+Alt+PavéNumérique1 = Police 1
+Alt+PavéNumérique2 = Police 2      
+etc...
+Alt+A = Police A
+Alt+C = Police C
+Alt+E = Police E
+Alt+F = Police F
+
+  La case à cocher 'Invers.' indique si la police courante est inversée ou pas.
+
+  A droite de la barre des boutons figurent respectivement les noms des fichiers 
+destinations (*.dsw) et polices (*.pol) courants.
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.3. Le cadre 'Numéro de Message' :
+
+  Les deux boutons 'flèches rouges' permettent de passer respectivement au message 
+suivant ou précédent. 
+
+	Raccourcis clavier :
+
+PgUp 	= Message Précédent.
+PgDown 	= Message Suivant.
+
+  La liste déroulante indique le message courant et permet de sélectionner un message.
+
+  Le bouton 'Modifier' permet de modifier le numéro de message courant : les numéros doivent 
+être compris entre 1 et 9999.
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.4. Les onglets girouettes :
+
+  Il suffit de cliquer sur un onglet pour afficher les messages de la girouette correspondante.
+
+	Raccourcis clavier : 
+  Une fois sélectionné un des onglets, les touches flèches droite et gauche permettent de se 
+déplacer d'une girouette  à l'autre.
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.5. L'éditeur de messages :
+
+  Pour chaque girouette et pour chaque message, il est possible de saisir une partie en-tête 
+et jusqu'à trois alternances. Pour chaque alternance, il est possible d'indiquer un temps 
+d'affichage en dixième de seconde ainsi qu'une animation pour le texte d'une girouette à Leds.
+
+  Les cases correspondant à la police se complètent automatiquement pour indiquer le code 
+de police de chaque lettre. Il n'est pas possible d'éditer directement ces cases. Pour changer 
+la police, il faut sélectionner à l'aide de la souris les lettres concernées et choisir une 
+police dans la liste déroulante de la barre des boutons (ou utilisez le raccourci clavier 
+correspondant à la police).
+
+  Pour les girouettes à Leds couleurs, sélectionner la couleur du texte et de fond en cliquant
+sur les boutons "texte" et "fond" puis sur la couleur désirée.
+
+	Raccourcis clavier : 
+  Une fois sélectionné un des champs de la zone, les touches flèches haut et bas permettent de
+se déplacer d'un champ à l'autre.
+
+
+	Menu contextuel :
+  Un menu contextuel est accessible à l'intérieur des cases d'édition de messages par un clic 
+sur le bouton droit de la souris.
+
+  Via ce menu, on peut accéder aux différentes polices, ainsi qu'aux fonctions de Copier/Coller. 
+
+
+===================================================================================
+===================================================================================
+
+	LES SAUTS DE LIGNE :
+
+  Le caractère ' ¦ ' représente un saut de ligne. Il s'obtient en appuyant 
+sur la touche ' | ' ('pipe' = Alt Gr - 6 ).
+
+
+	LES ESPACEMENTS : 
+
+  Deux types d'espacements sont disponibles : 
+
+	* L'espace normal    :	obtenu avec la barre d'espace, sa largeur dépend de la police
+
+	* Le saut de colonne : 	obtenu avec le caractère ' ² ' (carré en haut à gauche 
+				au dessus de la touche Tab sur le clavier), sa largeur 
+				est d'une seule colonne. 
+
+===================================================================================
+===================================================================================
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.6. L'éditeur d'options :
+
+  A chaque message, il est possible d'associer un certain nombre d'options (16 caractères 
+maximum par option).
+
+  Options disponibles : N° Film, Afficheur, SAE...
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.7. L'afficheur de girouette :
+
+  Permet une simulation dynamique de l'affichage dans le bus. 
+  En partie supérieure, le format de la girouette courante est rappelé.
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.8. La boite de dialogue 'Choix des girouettes' :
+
+  Accessible par le menu 'Configuration / Girouettes...' (ou Ctrl-G). Les onglets permettent 
+de sélectionner les girouettes avant, latérale ou arrière (accessibles aussi par les touches 
+flèche droite et gauche). Il faut d'abord sélectionner le type de girouette sur l'onglet girouette frontale. 
+La liste déroulante des références contient toutes les références que l'on peut choisir. 
+Les dimensions de la girouette sont rappelées en dessous.
+
+  La case 'Description' permet de saisir un commentaire personnel qui sera conservé dans le 
+fichier 'edigir.gir'.
+
+
+------------------------------------------------------------------------------------------------
+	  2.1.9. La boite de dialogue 'Options à l'affichage' :
+
+  Accessible par le menu 'Configuration / Affichage des options ...' (ou Ctrl-O). Elle permet de
+choisir quelles sont les options qui sont affichées dans la fenêtre principale de l'éditeur de 
+destinations. Seules trois options peuvent être affichées en même temps. Les options cochées 
+en plus sont simplement ignorées.
+
+
+
+
+------------------------------------------------------------------------------------------------
+	   2.1.10.	L'onglet chauffeur
+
+
+ Sur le pupitre du chauffeur est affiché une simulation de l'alternance du message en cours d'édition 
+ou le message saisi dans l'éditeur. Le radio bouton situé à gauche permet de sélectionner l'alternance en 
+cours. 
+Les caractères saut de ligne '|' et saut de colonne '²' ne sont pas représentés.
+De plus, les caractères autres que alphanumériques en polices 4/5 et E/F sont représentés par '-'.
+
+
+------------------------------------------------------------------------------------------------
+	   2.1.11. L'onglet afficheur intérieur 
+
+4 types de messages peuvent être saisis avec une animation et une temporisation (en 1/10s) : 
+NOTA :	La temporisation est facultatif, une valeur de 1.5s est affectée lorsqu'elle est absente.
+
+Pour une ligne X, il faut saisir au numéro de message X le nom du Terminus et l'emplacement 
+où seront saisis les noms d'arrêt (début et fin de liste).
+
+La liste des noms d'arrêt permet de déterminer le numéro de message de début et de fin de la liste 
+des noms d'arrêt parcourus sur la ligne.
+
+Exemple :  Pour une ligne 5 (donc numéro de message 5), on suppose s'arrêter à 10 stations.
+	.Il faudra alors saisir, au numéro de message N°5, une liste d'arrêt qui commence par
+	exemple à 101 et se termine à 110 (le N° est sans importance, il faut simplement avoir
+	 un écart égal à 10). 
+	.Puis sélectionner (ou créer) les numéros de message 101, 102,...110, et y saisir dans
+	 " Prochain Arrêt ", le texte qui sera affiché à chaque arrêt.
+
+
+Le message " Prochain arrêt " est donc le nom d'un arrêt annoncé par l'afficheur intérieur
+Attention : La liste des noms d'arrêt parcourue sur une ligne doit être saisie sur des messages consécutifs.
+
+
+Le message " Terminus " est le nom du terminus qui apparaît sur l'afficheur intérieur
+
+
+Le message " Prédéfini " est un texte de présentation. Ex.: "DESTINATION", "PROCHAIN ARRET".
+Ils sont figés sur des numéro de message préétablis.
+Astuce :	En cliquant avec le bouton droit de la souris sur la case de saisie du message prédéfini, 
+	un menu contextuel apparaît dans lequel il est possible de sélectionner des textes déjà saisis. 
+
+Les messages d'informations permettent d'afficher certains renseignements ponctuels. Ils peuvent signaler 
+par exemple des messages de perturbation, des messages commerciaux... Les messages seront saisis
+selon les infos provenant du SAE.
+
+
+La police de chaque caractère est modifiable : 3 polices sont disponibles sur un afficheur:
+. La police 1 qui est une police compressée de 4 points maximum de large.
+. La police 2 qui est une police normale de 5 points maximum de large.
+. La police 3 qui est une police grasse de 6 points maximum de large.
+
+
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+	2.2. L'Editeur de polices :
+
+	  2.2.1. La barre de menus :
+
+DESTINATION :
+--------------------------
+Editeur de destinations (Ctrl-E) : Permet le retour à l'éditeur de destinations.
+
+RQ : on peut aussi retourner à l'éditeur de destinations en cliquant sur le bouton " Fermer " 
+en bas à droite de la fenêtre.
+
+
+POLICES :
+-----------------
+Charger 		: charge un fichier de polices (*.pol) à partir du disque.
+Charger les logos	: charge seulement es polices 4/5 et E/F d'un fichier police (*.pol)
+Enregistrer (Ctrl-S) 	: enregistre le fichier de polices courant.
+Enregistrer sous 	: enregistre le fichier de polices courant en demandant un nom.
+Copier lettre (Ctrl-C) 	: Copie la lettre sélectionnée dans le 'presse papier'.
+Coller lettre (Ctrl-V)	: Colle la lettre contenue dans le 'presse papier' sur la lettre 
+		  sélectionnée.
+
+Attention : le copier/coller ne fonctionne bien qu'entre des caractères d'une même police. 
+                 Si on effectue un 'coller' sur une police plus grande, les points non définis 
+	 seront remplis au hasard.
+
+Remarque : le copier/coller peut s'effectuer d'un fichier à l'autre, le 'presse papier' 
+	   n'étant pas remis à zéro lors du chargement d'une nouvelle police.
+
+
+------------------------------------------------------------------------------------------------
+	  2.2.2. L'indicateur de police :
+
+  Indique le nom du fichier de polices en cours d'édition. La liste déroulante permet de choisir 
+la police en cours. 
+
+Remarque : les polices 4 et 5 et les polices E et F sont identiques sur cet écran. 
+	   Elles diffèrent simplement à l'affichage ( sur les girouettes ) par l'absence de 
+	   colonne vide entre les lettres des polices 5 et F. Cela permet de créer des symboles 
+	   (Logo) répartis sur plusieurs lettres accolées.
+
+
+------------------------------------------------------------------------------------------------
+	  2.2.3. L'éditeur de lettres :
+
+  Pour les polices 4/5 et E/F uniquement : Création de caractères personnalisés. Il permet, à 
+l'aide de la souris, d'éditer point par point la lettre sélectionnée. En cliquant avec le bouton 
+gauche sur un point il s'allume, avec le bouton droit il s'éteint. Les deux boutons 'Remplir' et 
+'Vider' permettent respectivement d'allumer et d'éteindre tous les points de la lettre courante.
+
+  A droite on trouve une échelle qui permet de connaître le nombre de points depuis le haut 
+de la lettre.
+
+
+------------------------------------------------------------------------------------------------
+	  2.2.4. Le tableau de visualisation des lettres :
+
+  Deux modes de visualisation sont possibles :
+
+	- L'affichage par polices :
+
+  Affiche la même lettre dans toutes les polices. En cliquant sur une police, on passe dans la 
+police correspondante pour la lettre courante.
+
+	- L'affichage par lettres :
+
+  Affiche toutes les lettres de la police courante. 
+
+On passe d'un mode à l'autre avec les boutons 'Lettre' et 'Alphabet'.
+
+Raccourcis clavier : chaque lettre peut être atteinte directement en appuyant sur la touche 
+		correspondante au clavier. On passe d'une lettre à la suivante avec la 
+		touche PgDown et à la précédente avec la touche PgUp.
+
+
+------------------------------------------------------------------------------------------------
+	2.3. Le Module de visualisation rapide :
+
+  Ce module permet la visualisation des messages saisis. Seuls les messages de la girouette 
+avant sont affichés. On peut modifier un numéro de message en le sélectionnant et en le 
+remplaçant par un numéro valide, c'est-à-dire libre et compris entre 0001 et 9999.
+
+  Quand un message est sélectionné et qu'on retourne dans l'éditeur de destinations, c'est ce 
+message qui est pris comme message courant.
+
+  Le menu 'Destinations' de ce module est identique à celui du module d'édition de polices.
+
+Raccourcis clavier : on peut se déplacer d'un message à l'autre avec les flèches haut et bas 
+		 ou les touches PgUp et PgDown.
+
+Remarque : Les messages sont triés dans l'ordre des numéros. Si un numéro est modifié depuis 
+	   ce module, le message correspondant reste à sa place. Les messages seront à nouveau 
+	   triés dans le bon ordre à la prochaine entrée dans le module de visualisation rapide.
+
+
+------------------------------------------------------------------------------------------------
+	2.4. Le module d'édition rapide :
+
+  Ce module est utilisé pour la saisie rapide des messages. Le type de police et le nombre de 
+lignes (1 ou 2 possibles) sont fixés par alternance. Seuls les messages de la girouette avant 
+peuvent ainsi être édités. Les messages créés dans cette liste doivent avoir des numéros 
+différents de ceux déjà existants. 
+
+
+------------------------------------------------------------------------------------------------
+	  2.4.1. La barre de menus :
+
+DESTINATION :
+-------------------------
+Retour sans exportation (Ctrl-S) : revient au module de l'éditeur de destinations sans y exporter 
+			   les données contenues dans le tableau. Les données non 
+			   exportées sont conservées dans le tableau jusqu'à la fermeture
+			   complète d'Edigir.
+
+Exporter vers l'éditeur (Ctrl-E)    : Exporte les données du tableau vers l'éditeur de destinations.
+
+Importer depuis un fichier TXT..: Importe des destinations depuis un fichier texte. Ce fichier 
+			   peut être saisi avec un éditeur DOS, WORD ou EXCEL. Dans tous 
+			   les cas, demander à DUHAMEL un prototype pour le fichier de 
+			   base, afin de permettre une saisie au bon format des textes. 
+			   Le fichier texte doit être formaté pour que le numéro de 
+			   message, la partie fixe et chaque alternance soit séparés 
+			   par 1 seul caractère de tabulation. Le caractère '|' (altGr-6) 
+			   est accepté pour les saut de lignes dans une alternance.
+
+
+------------------------------------------------------------------------------------------------
+	  2.4.2. Le tableau de données :
+
+  Les différentes colonnes du tableau correspondent aux différents champs du message:
+
+	- N° : numéro de message (rappelons qu'il est unique et compris entre 1 et 9999)
+	- En tête : le texte de la partie en tête.
+	- Alternance N° 1, 2 et 3 : le texte des alternances.
+
+
+------------------------------------------------------------------------------------------------
+	  2.4.3. Les polices d'exportation :
+
+  Une fois les différents messages saisis dans le tableau, les listes déroulantes de choix 
+polices permettent de définir les polices à appliquer lors de l'exportation:
+
+	- 'En-tête' désigne la police appliquée au texte de l'en-tête.
+	- 'Une ligne' indique les polices appliquées pour les différentes alternances à une ligne. 
+	- 'Deux lignes' indique les polices appliquées pour les différentes alternances à deux 
+	  lignes ('L1' désignant la première ligne et 'L2' la seconde).
+
+
+------------------------------------------------------------------------------------------------
+	2.5. Le module de simulation :
+
+  Ce module permet d'afficher pour chaque message, toutes les alternances (les unes sous les 
+autres) de toutes les girouettes. Les boutons flèches ou les touches PgUp et PgDown permettent 
+de passer d'un message à l'autre. Le bouton 'Imprimer' effectue une copie d'écran vers 
+l'imprimante courante.
+
+'Ok' provoque le retour à l'éditeur de destination dans le message courant.
+
+
+------------------------------------------------------------------------------------------------
+	2.6. Le module de téléchargement :
+
+  Ce module est utilisé pour effectuer le téléchargement des messages vers le boitier 
+de transfert. On y accède en cliquant sur la commande " Télécharger " dans le menu
+" Téléchargement " de la barre des menus. 
+
+  Il existe deux modes de téléchargement : le mode CLASSIC et le mode DUHABUS. Ces deux modes 
+permettent le téléchargement des polices (4/5 et E/F) et des destinations. Le mode DUHABUS 
+permet en plus le téléchargement de programme. La sélection de l'un ou l'autre des deux modes
+se fait grâce au menu déroulant 'Mode'.
+
+------------------------------------------------------------------------------------------------
+	  2.6.1	Mode CLASSIQUE :
+
+  Il faut tout d'abord sélectionner dans la liste déroulante le port série ( Com ) auquel est 
+relié le boîtier de transfert.
+ 
+  En cochant les cases correspondantes, il est possible de télécharger la police 4/5, la police 
+E/F et/ou les destinations.
+ 
+  Le téléchargement débute au moment où on appuie sur la touche 'Enter' du clavier ou que l'on 
+clique sur le bouton 'Télécharger'. Pour interrompre le téléchargement, il suffit de presser 
+'Esc' ou de cliquer sur le bouton 'Annuler'.
+ 
+  Pendant le téléchargement l'état s'affiche dans le cadre correspondant. A la fin du transfert,
+un message indique si tout s'est bien passé ou non.
+
+------------------------------------------------------------------------------------------------
+	  2.6.2	Mode DUHABUS :
+
+  Comme dans le mode CLASSIC, il faut sélectionner tout d'abord le port série ( Com ) auquel 
+est relié le boitier de transfert . (Nota : Assurez-vous auparavant auprès de nos services que
+le boitier de transfert utilisé supporte le téléchargement en mode DUHABUS.)
+ 
+  En cochant les cases correspondantes, il est possible de télécharger les fichiers de polices
+et de destinations ou le programme.
+ 
+  Si la case 'Programme' est cochée, une fenêtre permettant la sélection du nom de programme 
+à télécharger est automatiquement ouverte.
+
+  Sélectionner avant tout le ou les équipements à télécharger puis charger le fichier programme.
+ 
+  Le téléchargement débute au moment où on appuie sur la touche 'Enter' du clavier ou que l'on
+clique sur le bouton 'Télécharger'. Dans le cas du téléchargement de programme, EDIGIR vous
+demande de confirmer le choix du nom de programme à télécharger. Pour interrompre le
+téléchargement, il suffit de presser 'Esc' ou de cliquer sur le bouton 'Annuler'.
+ 
+  Pendant le téléchargement l'état s'affiche dans le cadre correspondant. A la fin du transfert,
+un message indique si tout s'est bien passé ou non.
+ 
+  Noter que le téléchargement de programme en mode DUHABUS peut prendre plusieurs dizaines
+de secondes. 
+ 
+
+------------------------------------------------------------------------------------------------
+	 2.7. L'Editeur de palette :	
+
+  Ce module est utilisé pour créer des couleurs qui seront sauvegardées dans une palette. 
+Cette palette permettra de sélectionner la couleur à attribuer aux messages. On y accède en 
+cliquant sur le menu "Couleurs" puis dans le sous-menu "Editeur de Palette" de la barre des 
+menus.
+
+  Pour créer une nouvelle palette, cliquer le menu "Fichier" "Nouvelle palette"
+  
+  Il est possible d'ajouter, de modifier, d'insérer, de supprimer une couleur dans la palette 
+gràce aux boutons dédiés.
+
+  Pour visualiser la couleur sur la girouette, sélectionner le bon port COM, cliquer sur 
+"connecter", puis cliquer sur la couleur à visualiser.
+  
+  
