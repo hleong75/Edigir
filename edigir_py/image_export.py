@@ -3,9 +3,13 @@ Image Export Module for Edigir.
 Exports LED display renderings to image formats (PNG, JPG, GIF).
 """
 
+from __future__ import annotations
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 from .models import DisplayConfig, Font, FontCharacter, Message, Project
+
+if TYPE_CHECKING:
+    from PIL import ImageDraw as ImageDrawModule
 
 # Try to import PIL for image export
 try:
@@ -13,6 +17,8 @@ try:
     PIL_AVAILABLE = True
 except ImportError:
     PIL_AVAILABLE = False
+    Image = None
+    ImageDraw = None
 
 
 class ImageExporter:
@@ -71,7 +77,7 @@ class ImageExporter:
         
         return (width, height)
     
-    def _draw_pixel(self, draw: ImageDraw.Draw, x: int, y: int, 
+    def _draw_pixel(self, draw, x: int, y: int, 
                     color: Tuple[int, int, int], offset_x: int, offset_y: int):
         """Draw a single LED pixel."""
         px = offset_x + x * (self.pixel_size + self.pixel_gap)
@@ -83,7 +89,7 @@ class ImageExporter:
             fill=color
         )
     
-    def _draw_simple_char(self, draw: ImageDraw.Draw, char: str, 
+    def _draw_simple_char(self, draw, char: str, 
                           start_x: int, offset_x: int, offset_y: int) -> int:
         """
         Draw a simple character using a basic 5x7 font pattern.
@@ -160,7 +166,7 @@ class ImageExporter:
         
         return 5  # Width of simple font
     
-    def _draw_empty_matrix(self, draw: ImageDraw.Draw):
+    def _draw_empty_matrix(self, draw):
         """Draw the empty LED matrix background."""
         offset_x = 10
         offset_y = 10
@@ -177,7 +183,7 @@ class ImageExporter:
                 for x in range(self.config.width2):
                     self._draw_pixel(draw, x, y, self.LED_OFF, offset_x, offset_y)
     
-    def _render_text_to_image(self, text: str, font_codes: str = "") -> Image.Image:
+    def _render_text_to_image(self, text: str, font_codes: str = ""):
         """Render text to a PIL Image."""
         if not PIL_AVAILABLE:
             raise ImportError("PIL/Pillow is required for image export")
