@@ -12,6 +12,13 @@ from .models import DisplayConfig, Font, FontCharacter, Message, Project, Palett
 from .renderer import BUILTIN_FONT_5X7, get_builtin_char_bitmap
 
 
+# Help text constant for fullscreen mode
+FULLSCREEN_HELP_TEXT = (
+    "ESC: Quitter | ←/→: Message | ↑/↓: Alternance | "
+    "ESPACE: Play/Pause | C: Couleur | S: Scroll | F: Plein écran | G: Glow"
+)
+
+
 class FullscreenGirouette(tk.Toplevel):
     """
     Fullscreen window that displays the computer screen as a girouette.
@@ -120,7 +127,7 @@ class FullscreenGirouette(tk.Toplevel):
         
         self.info_label = tk.Label(
             self.info_frame,
-            text="ESC: Quitter | ←/→: Message | ↑/↓: Alternance | ESPACE: Play/Pause | C: Couleur | S: Scroll | F: Plein écran",
+            text=FULLSCREEN_HELP_TEXT,
             fg="#666666",
             bg="#1a1a1a",
             font=("Helvetica", 10)
@@ -383,9 +390,9 @@ class FullscreenGirouette(tk.Toplevel):
         
         self.scroll_offset += 1
         
-        # Reset when text scrolls off screen
+        # Reset when text scrolls off screen - use negative offset for seamless loop
         if self.scroll_offset > text_width + self.display_config.width1:
-            self.scroll_offset = 0
+            self.scroll_offset = -self.display_config.width1
         
         # Schedule next frame
         self.scroll_timer = self.after(self.scroll_speed, self._animate_scroll)

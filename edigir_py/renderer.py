@@ -232,12 +232,17 @@ class LEDRenderer:
         elif color == self.LED_YELLOW:
             return self.LED_DIM_YELLOW
         else:
-            # Calculate dim version
-            hex_color = color.lstrip('#')
-            r = int(hex_color[0:2], 16) // 3
-            g = int(hex_color[2:4], 16) // 3
-            b = int(hex_color[4:6], 16) // 3
-            return f"#{r:02x}{g:02x}{b:02x}"
+            # Calculate dim version with validation
+            try:
+                hex_color = color.lstrip('#')
+                if len(hex_color) != 6:
+                    return self.LED_DIM_AMBER  # Default fallback
+                r = int(hex_color[0:2], 16) // 3
+                g = int(hex_color[2:4], 16) // 3
+                b = int(hex_color[4:6], 16) // 3
+                return f"#{r:02x}{g:02x}{b:02x}"
+            except (ValueError, IndexError):
+                return self.LED_DIM_AMBER  # Default fallback
     
     def _draw_empty_matrix(self):
         """Draw empty LED matrix background."""
@@ -533,9 +538,9 @@ class DisplayPreview(ttk.Frame):
         
         self._scroll_offset += 1
         
-        # Reset when text scrolls off screen
+        # Reset when text scrolls off screen - use negative offset for seamless loop
         if self._scroll_offset > self._text_width + self.display_config.width1:
-            self._scroll_offset = 0
+            self._scroll_offset = -self.display_config.width1
         
         self._animation_timer = self.after(
             self._animation_speed, 
