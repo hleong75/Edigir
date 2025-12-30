@@ -267,6 +267,8 @@ class EditorApplication(tk.Tk):
         
         ttk.Button(anim_frame, text="▶ Jouer", 
                    command=self._play_animation).pack(side=tk.LEFT, padx=5)
+        ttk.Button(anim_frame, text="↔ Défiler",
+                   command=self._play_scroll_animation).pack(side=tk.LEFT, padx=5)
         ttk.Button(anim_frame, text="⏹ Stop",
                    command=self._stop_animation).pack(side=tk.LEFT, padx=5)
         
@@ -951,15 +953,43 @@ class EditorApplication(tk.Tk):
         self.display_preview.render_text(text, fonts)
     
     def _play_animation(self):
-        """Start animation playback."""
+        """Start animation playback with alternance cycling."""
         msg = self.project.get_message(self.current_message_num)
         if not msg:
             return
         
-        text = msg.alternances[0].text or msg.header
-        fonts = "2" * len(text)
+        # Build list of alternances with their durations
+        alternances = []
+        for alt in msg.alternances:
+            if alt.text:
+                text = msg.header + alt.text
+                duration = alt.duration * 100  # Convert to milliseconds
+                alternances.append((text, duration))
         
-        self.display_preview.start_scroll_animation(text, fonts)
+        if not alternances:
+            # No alternances, use header only
+            if msg.header:
+                alternances = [(msg.header, 3000)]
+        
+        if alternances:
+            fonts = "2" * max(len(text) for text, _ in alternances)
+            self.display_preview.start_alternance_animation(alternances, fonts)
+    
+    def _play_scroll_animation(self):
+        """Start scrolling animation."""
+        msg = self.project.get_message(self.current_message_num)
+        if not msg:
+            return
+        
+        text = msg.header
+        for alt in msg.alternances:
+            if alt.text:
+                text += alt.text
+                break
+        
+        if text:
+            fonts = "2" * len(text)
+            self.display_preview.start_scroll_animation(text, fonts)
     
     def _stop_animation(self):
         """Stop animation playback."""

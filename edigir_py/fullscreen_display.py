@@ -1,6 +1,6 @@
 """
 Fullscreen Display Mode for Edigir.
-Turns the computer screen into a virtual girouette (bus display).
+Turns the computer screen into a virtual girouette (bus display) with animations.
 """
 
 import tkinter as tk
@@ -8,13 +8,21 @@ from tkinter import ttk
 from typing import Dict, List, Optional, Callable
 import time
 
-from .models import DisplayConfig, Font, FontCharacter, Message, Project, Palette
+from .models import DisplayConfig, Font, FontCharacter, Message, Project, Palette, AnimationType
+from .renderer import BUILTIN_FONT_5X7, get_builtin_char_bitmap
+
+
+# Help text constant for fullscreen mode
+FULLSCREEN_HELP_TEXT = (
+    "ESC: Quitter | ←/→: Message | ↑/↓: Alternance | "
+    "ESPACE: Play/Pause | C: Couleur | S: Scroll | F: Plein écran | G: Glow"
+)
 
 
 class FullscreenGirouette(tk.Toplevel):
     """
     Fullscreen window that displays the computer screen as a girouette.
-    This allows the screen to be used as a real bus destination display.
+    This allows the screen to be used as a real bus destination display with smooth animations.
     """
     
     # LED colors
@@ -24,6 +32,13 @@ class FullscreenGirouette(tk.Toplevel):
     LED_RED = "#ff0000"
     LED_YELLOW = "#ffff00"
     LED_WHITE = "#ffffff"
+    
+    # Dim versions for glow effect
+    LED_DIM_AMBER = "#4d2200"
+    LED_DIM_GREEN = "#004d00"
+    LED_DIM_RED = "#4d0000"
+    LED_DIM_YELLOW = "#4d4d00"
+    LED_DIM_WHITE = "#4d4d4d"
     
     def __init__(self, parent, project: Project, display_config: DisplayConfig = None):
         super().__init__(parent)
@@ -40,6 +55,11 @@ class FullscreenGirouette(tk.Toplevel):
         self.scroll_offset: int = 0
         self.alternance_timer: Optional[str] = None
         self.scroll_timer: Optional[str] = None
+        self.animation_frame: int = 0
+        
+        # Animation settings
+        self.scroll_speed = 30  # ms per pixel
+        self.use_glow = True
         
         # Colors
         self.led_on_color = self.LED_AMBER
@@ -48,6 +68,9 @@ class FullscreenGirouette(tk.Toplevel):
         
         # Fonts for rendering
         self.fonts: Dict[str, Font] = project.fonts if project.fonts else {}
+        
+        # Pixel cache for faster rendering
+        self._pixel_cache: Dict[str, int] = {}
         
         # Setup fullscreen
         self._setup_window()
@@ -104,7 +127,7 @@ class FullscreenGirouette(tk.Toplevel):
         
         self.info_label = tk.Label(
             self.info_frame,
-            text="ESC: Quitter | ←/→: Message | ↑/↓: Alternance | ESPACE: Play/Pause | C: Couleur | F: Plein écran",
+            text=FULLSCREEN_HELP_TEXT,
             fg="#666666",
             bg="#1a1a1a",
             font=("Helvetica", 10)
@@ -162,10 +185,14 @@ class FullscreenGirouette(tk.Toplevel):
         self.bind('<space>', lambda e: self._toggle_animation())
         self.bind('<c>', lambda e: self._cycle_color())
         self.bind('<C>', lambda e: self._cycle_color())
+        self.bind('<s>', lambda e: self._toggle_scroll())
+        self.bind('<S>', lambda e: self._toggle_scroll())
         self.bind('<f>', lambda e: self._toggle_fullscreen())
         self.bind('<F>', lambda e: self._toggle_fullscreen())
         self.bind('<h>', lambda e: self._toggle_info())
         self.bind('<H>', lambda e: self._toggle_info())
+        self.bind('<g>', lambda e: self._toggle_glow())
+        self.bind('<G>', lambda e: self._toggle_glow())
         
         # Mouse click to toggle info
         self.canvas.bind('<Button-1>', lambda e: self._toggle_info())
@@ -194,6 +221,11 @@ class FullscreenGirouette(tk.Toplevel):
             self.info_frame.pack(fill=tk.X, side=tk.TOP, before=self.canvas_frame)
             self.status_frame.pack(fill=tk.X, side=tk.BOTTOM)
     
+    def _toggle_glow(self):
+        """Toggle LED glow effect."""
+        self.use_glow = not self.use_glow
+        self._update_display()
+    
     def _prev_message(self):
         """Go to previous message."""
         nums = self.project.get_sorted_message_numbers()
@@ -205,6 +237,7 @@ class FullscreenGirouette(tk.Toplevel):
             if idx > 0:
                 self.current_message_num = nums[idx - 1]
                 self.current_alternance = 0
+                self._stop_animation()
                 self._update_display()
         except ValueError:
             self.current_message_num = nums[0]
@@ -221,6 +254,7 @@ class FullscreenGirouette(tk.Toplevel):
             if idx < len(nums) - 1:
                 self.current_message_num = nums[idx + 1]
                 self.current_alternance = 0
+                self._stop_animation()
                 self._update_display()
         except ValueError:
             self.current_message_num = nums[-1]
@@ -258,31 +292,49 @@ class FullscreenGirouette(tk.Toplevel):
         self._update_display()
     
     def _toggle_animation(self):
-        """Toggle animation playback."""
+        """Toggle alternance cycling animation."""
         if self.animation_running:
             self._stop_animation()
         else:
-            self._start_animation()
+            self._start_alternance_animation()
     
-    def _start_animation(self):
+    def _toggle_scroll(self):
+        """Toggle scroll animation for current text."""
+        if self.scroll_timer:
+            self._stop_scroll()
+        else:
+            self._start_scroll_animation()
+    
+    def _start_alternance_animation(self):
         """Start alternance cycling animation."""
         self.animation_running = True
         self._cycle_alternance()
         self._update_status()
     
+    def _start_scroll_animation(self):
+        """Start scrolling animation for current text."""
+        self.scroll_offset = 0
+        self._animate_scroll()
+        self._update_status()
+    
     def _stop_animation(self):
-        """Stop animation."""
+        """Stop all animations."""
         self.animation_running = False
         
         if self.alternance_timer:
             self.after_cancel(self.alternance_timer)
             self.alternance_timer = None
         
+        self._stop_scroll()
+        self._update_status()
+    
+    def _stop_scroll(self):
+        """Stop scroll animation."""
         if self.scroll_timer:
             self.after_cancel(self.scroll_timer)
             self.scroll_timer = None
-        
-        self._update_status()
+            self.scroll_offset = 0
+            self._update_display()
     
     def _cycle_alternance(self):
         """Cycle through alternances based on their duration."""
@@ -316,6 +368,46 @@ class FullscreenGirouette(tk.Toplevel):
                 break
         
         self._cycle_alternance()
+    
+    def _animate_scroll(self):
+        """Animate scrolling text."""
+        msg = self.project.get_message(self.current_message_num)
+        if not msg:
+            return
+        
+        # Get text to display
+        alt = msg.alternances[self.current_alternance]
+        text = msg.header + alt.text
+        
+        if not text:
+            return
+        
+        # Calculate text width
+        text_width = self._get_text_width(text)
+        
+        # Update display with scroll offset
+        self._draw_led_matrix(text)
+        
+        self.scroll_offset += 1
+        
+        # Reset when text scrolls off screen - use negative offset for seamless loop
+        if self.scroll_offset > text_width + self.display_config.width1:
+            self.scroll_offset = -self.display_config.width1
+        
+        # Schedule next frame
+        self.scroll_timer = self.after(self.scroll_speed, self._animate_scroll)
+    
+    def _get_text_width(self, text: str) -> int:
+        """Calculate the total width of text in pixels."""
+        total_width = 0
+        for char in text:
+            if char == '|' or char == '¦':
+                continue
+            elif char == '²':
+                total_width += 1
+            else:
+                total_width += 6  # 5 pixels + 1 spacing
+        return total_width
     
     def _update_display(self):
         """Update the LED display."""
@@ -365,7 +457,7 @@ class FullscreenGirouette(tk.Toplevel):
         self._draw_empty_matrix()
         
         # Then render text
-        current_x = 0
+        current_x = -self.scroll_offset
         
         for char in text:
             # Handle special characters
@@ -375,117 +467,65 @@ class FullscreenGirouette(tk.Toplevel):
                 current_x += 1
                 continue
             
-            # Get font (default to font 2)
-            font = self.fonts.get('2')
-            if font is None:
-                # Create simple character rendering
-                current_x += self._draw_simple_char(char, current_x, offset_x, offset_y)
-                continue
+            # Get character bitmap from built-in font
+            bitmap = get_builtin_char_bitmap(char)
+            char_width = 5
+            char_height = 7
             
-            # Get character from font
-            font_char = font.get_char(char)
+            # Center vertically
+            y_start = (self.display_config.height1 - char_height) // 2
             
-            if font_char:
-                # Render character pixels
-                y_start = (self.display_config.height1 - font_char.height) // 2
-                
-                for y, row in enumerate(font_char.pixels):
-                    for x, pixel in enumerate(row):
-                        if pixel:
-                            screen_x = current_x + x
-                            screen_y = y_start + y
-                            
-                            if 0 <= screen_x < self.display_config.width1:
-                                if 0 <= screen_y < self.display_config.height1:
-                                    self._draw_pixel(
-                                        screen_x, screen_y,
-                                        self.led_on_color,
-                                        offset_x, offset_y
-                                    )
-                
-                current_x += font_char.width + 1
-            else:
-                current_x += 4  # Space for unknown char
-    
-    def _draw_simple_char(self, char: str, start_x: int, offset_x: int, offset_y: int) -> int:
-        """Draw a simple character without font (fallback)."""
-        # Simple 5x7 dot pattern for basic characters
-        # This is a fallback when no font is loaded
-        width = 5
-        height = 7
-        
-        # Center vertically
-        y_start = (self.display_config.height1 - height) // 2
-        
-        # Draw a simple rectangle pattern for the character
-        for y in range(height):
-            for x in range(width):
-                screen_x = start_x + x
-                screen_y = y_start + y
-                
-                if 0 <= screen_x < self.display_config.width1:
-                    if 0 <= screen_y < self.display_config.height1:
-                        # Create a simple pattern
-                        if char.isalnum():
-                            # Draw outline
-                            if y == 0 or y == height - 1 or x == 0 or x == width - 1:
+            # Render character pixels
+            for y, row in enumerate(bitmap):
+                for x, pixel in enumerate(row):
+                    if pixel:
+                        screen_x = current_x + x
+                        screen_y = y_start + y
+                        
+                        if 0 <= screen_x < self.display_config.width1:
+                            if 0 <= screen_y < self.display_config.height1:
                                 self._draw_pixel(
                                     screen_x, screen_y,
                                     self.led_on_color,
                                     offset_x, offset_y
                                 )
-        
-        return width + 1
+            
+            current_x += char_width + 1  # Add spacing
+    
+    def _get_glow_color(self) -> str:
+        """Get dim glow color for current LED color."""
+        glow_map = {
+            self.LED_AMBER: self.LED_DIM_AMBER,
+            self.LED_GREEN: self.LED_DIM_GREEN,
+            self.LED_RED: self.LED_DIM_RED,
+            self.LED_YELLOW: self.LED_DIM_YELLOW,
+            self.LED_WHITE: self.LED_DIM_WHITE,
+        }
+        return glow_map.get(self.led_on_color, self.LED_DIM_AMBER)
     
     def _draw_pixel(self, x: int, y: int, color: str, offset_x: int, offset_y: int):
-        """Draw a single LED pixel."""
+        """Draw a single LED pixel with glow effect."""
         px = offset_x + x * (self.pixel_size + self.pixel_gap)
         py = offset_y + y * (self.pixel_size + self.pixel_gap)
         
-        # Draw LED as rounded rectangle or circle
-        if self.pixel_size > 6:
-            # Larger pixels - draw as rounded LED with glow effect
-            if color != self.led_off_color:
-                # Draw glow
-                glow_color = self._adjust_brightness(color, 0.3)
-                self.canvas.create_oval(
-                    px - 1, py - 1,
-                    px + self.pixel_size + 1, py + self.pixel_size + 1,
-                    fill=glow_color,
-                    outline=""
-                )
-            
+        # Draw glow for lit pixels
+        if self.use_glow and color != self.led_off_color and self.pixel_size > 6:
+            glow_color = self._get_glow_color()
+            glow_size = self.pixel_size + 2
             self.canvas.create_oval(
-                px, py,
-                px + self.pixel_size, py + self.pixel_size,
-                fill=color,
+                px - 1, py - 1,
+                px + glow_size, py + glow_size,
+                fill=glow_color,
                 outline=""
             )
-        else:
-            # Smaller pixels - simple rectangle
-            self.canvas.create_rectangle(
-                px, py,
-                px + self.pixel_size, py + self.pixel_size,
-                fill=color,
-                outline=""
-            )
-    
-    def _adjust_brightness(self, hex_color: str, factor: float) -> str:
-        """Adjust the brightness of a hex color."""
-        # Remove # if present
-        hex_color = hex_color.lstrip('#')
         
-        # Convert to RGB
-        r = int(hex_color[0:2], 16)
-        g = int(hex_color[2:4], 16)
-        b = int(hex_color[4:6], 16)
-        
-        # Adjust brightness
-        r = int(r * factor)
-        g = int(g * factor)
-        b = int(b * factor)
-        
-        return f"#{r:02x}{g:02x}{b:02x}"
+        # Draw LED
+        self.canvas.create_oval(
+            px, py,
+            px + self.pixel_size, py + self.pixel_size,
+            fill=color,
+            outline=""
+        )
     
     def _update_labels(self, msg: Message, text: str):
         """Update info labels."""
@@ -496,7 +536,7 @@ class FullscreenGirouette(tk.Toplevel):
     
     def _update_status(self):
         """Update status label."""
-        mode = "Lecture" if self.animation_running else "Statique"
+        mode = "Lecture" if self.animation_running else ("Défilant" if self.scroll_timer else "Statique")
         color_name = {
             self.LED_AMBER: "Ambre",
             self.LED_GREEN: "Vert",
@@ -505,8 +545,10 @@ class FullscreenGirouette(tk.Toplevel):
             self.LED_WHITE: "Blanc",
         }.get(self.led_on_color, "Ambre")
         
+        glow_state = "On" if self.use_glow else "Off"
+        
         self.status_label.config(
-            text=f"Mode: {mode} | Alternance: {self.current_alternance + 1}/3 | Couleur: {color_name}"
+            text=f"Mode: {mode} | Alternance: {self.current_alternance + 1}/3 | Couleur: {color_name} | Glow: {glow_state}"
         )
     
     def set_message(self, message_num: int):

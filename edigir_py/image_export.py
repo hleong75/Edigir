@@ -3,9 +3,14 @@ Image Export Module for Edigir.
 Exports LED display renderings to image formats (PNG, JPG, GIF).
 """
 
+from __future__ import annotations
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING
 from .models import DisplayConfig, Font, FontCharacter, Message, Project
+from .renderer import BUILTIN_FONT_5X7, get_builtin_char_bitmap
+
+if TYPE_CHECKING:
+    from PIL import ImageDraw as ImageDrawModule
 
 # Try to import PIL for image export
 try:
@@ -13,6 +18,8 @@ try:
     PIL_AVAILABLE = True
 except ImportError:
     PIL_AVAILABLE = False
+    Image = None
+    ImageDraw = None
 
 
 class ImageExporter:
@@ -71,7 +78,7 @@ class ImageExporter:
         
         return (width, height)
     
-    def _draw_pixel(self, draw: ImageDraw.Draw, x: int, y: int, 
+    def _draw_pixel(self, draw, x: int, y: int, 
                     color: Tuple[int, int, int], offset_x: int, offset_y: int):
         """Draw a single LED pixel."""
         px = offset_x + x * (self.pixel_size + self.pixel_gap)
@@ -83,71 +90,23 @@ class ImageExporter:
             fill=color
         )
     
-    def _draw_simple_char(self, draw: ImageDraw.Draw, char: str, 
+    def _draw_simple_char(self, draw, char: str, 
                           start_x: int, offset_x: int, offset_y: int) -> int:
         """
-        Draw a simple character using a basic 5x7 font pattern.
+        Draw a character using the built-in 5x7 font.
         Returns the width of the character.
         """
-        # Simple 5x7 pixel font patterns for common characters
-        SIMPLE_FONT = {
-            '0': ['01110', '10001', '10011', '10101', '11001', '10001', '01110'],
-            '1': ['00100', '01100', '00100', '00100', '00100', '00100', '01110'],
-            '2': ['01110', '10001', '00001', '00110', '01000', '10000', '11111'],
-            '3': ['01110', '10001', '00001', '00110', '00001', '10001', '01110'],
-            '4': ['00010', '00110', '01010', '10010', '11111', '00010', '00010'],
-            '5': ['11111', '10000', '11110', '00001', '00001', '10001', '01110'],
-            '6': ['00110', '01000', '10000', '11110', '10001', '10001', '01110'],
-            '7': ['11111', '00001', '00010', '00100', '01000', '01000', '01000'],
-            '8': ['01110', '10001', '10001', '01110', '10001', '10001', '01110'],
-            '9': ['01110', '10001', '10001', '01111', '00001', '00010', '01100'],
-            'A': ['01110', '10001', '10001', '11111', '10001', '10001', '10001'],
-            'B': ['11110', '10001', '10001', '11110', '10001', '10001', '11110'],
-            'C': ['01110', '10001', '10000', '10000', '10000', '10001', '01110'],
-            'D': ['11110', '10001', '10001', '10001', '10001', '10001', '11110'],
-            'E': ['11111', '10000', '10000', '11110', '10000', '10000', '11111'],
-            'F': ['11111', '10000', '10000', '11110', '10000', '10000', '10000'],
-            'G': ['01110', '10001', '10000', '10111', '10001', '10001', '01110'],
-            'H': ['10001', '10001', '10001', '11111', '10001', '10001', '10001'],
-            'I': ['01110', '00100', '00100', '00100', '00100', '00100', '01110'],
-            'J': ['00111', '00010', '00010', '00010', '00010', '10010', '01100'],
-            'K': ['10001', '10010', '10100', '11000', '10100', '10010', '10001'],
-            'L': ['10000', '10000', '10000', '10000', '10000', '10000', '11111'],
-            'M': ['10001', '11011', '10101', '10101', '10001', '10001', '10001'],
-            'N': ['10001', '11001', '10101', '10011', '10001', '10001', '10001'],
-            'O': ['01110', '10001', '10001', '10001', '10001', '10001', '01110'],
-            'P': ['11110', '10001', '10001', '11110', '10000', '10000', '10000'],
-            'Q': ['01110', '10001', '10001', '10001', '10101', '10010', '01101'],
-            'R': ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
-            'S': ['01110', '10001', '10000', '01110', '00001', '10001', '01110'],
-            'T': ['11111', '00100', '00100', '00100', '00100', '00100', '00100'],
-            'U': ['10001', '10001', '10001', '10001', '10001', '10001', '01110'],
-            'V': ['10001', '10001', '10001', '10001', '10001', '01010', '00100'],
-            'W': ['10001', '10001', '10001', '10101', '10101', '11011', '10001'],
-            'X': ['10001', '10001', '01010', '00100', '01010', '10001', '10001'],
-            'Y': ['10001', '10001', '01010', '00100', '00100', '00100', '00100'],
-            'Z': ['11111', '00001', '00010', '00100', '01000', '10000', '11111'],
-            ' ': ['00000', '00000', '00000', '00000', '00000', '00000', '00000'],
-            '-': ['00000', '00000', '00000', '11111', '00000', '00000', '00000'],
-            '.': ['00000', '00000', '00000', '00000', '00000', '00000', '00100'],
-            ':': ['00000', '00100', '00100', '00000', '00100', '00100', '00000'],
-        }
-        
-        # Convert to uppercase for lookup
-        char_upper = char.upper()
-        pattern = SIMPLE_FONT.get(char_upper, SIMPLE_FONT.get(' '))
-        
-        if pattern is None:
-            return 4  # Return default width for unknown chars
+        # Get bitmap from shared font
+        bitmap = get_builtin_char_bitmap(char)
         
         # Calculate vertical offset to center
-        char_height = len(pattern)
+        char_height = len(bitmap)
         y_start = (self.config.height1 - char_height) // 2
         
         # Draw the character
-        for y, row in enumerate(pattern):
+        for y, row in enumerate(bitmap):
             for x, pixel in enumerate(row):
-                if pixel == '1':
+                if pixel:
                     screen_x = start_x + x
                     screen_y = y_start + y
                     
@@ -158,9 +117,9 @@ class ImageExporter:
                                 self.led_color, offset_x, offset_y
                             )
         
-        return 5  # Width of simple font
+        return 5  # Width of built-in font
     
-    def _draw_empty_matrix(self, draw: ImageDraw.Draw):
+    def _draw_empty_matrix(self, draw):
         """Draw the empty LED matrix background."""
         offset_x = 10
         offset_y = 10
@@ -177,7 +136,7 @@ class ImageExporter:
                 for x in range(self.config.width2):
                     self._draw_pixel(draw, x, y, self.LED_OFF, offset_x, offset_y)
     
-    def _render_text_to_image(self, text: str, font_codes: str = "") -> Image.Image:
+    def _render_text_to_image(self, text: str, font_codes: str = ""):
         """Render text to a PIL Image."""
         if not PIL_AVAILABLE:
             raise ImportError("PIL/Pillow is required for image export")
